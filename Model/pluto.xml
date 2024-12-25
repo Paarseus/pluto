@@ -1,0 +1,206 @@
+<mujoco model="pluto">
+  <compiler angle="degree"/>
+  <option integrator="implicitfast" cone="elliptic" impratio="100"/>
+  <visual>
+    <global ellipsoidinertia="true"/>
+  </visual>
+
+
+
+
+
+
+<!-- Assets -->
+  <asset>
+<!-- Materials -->
+      <material name="yellow" rgba="0.1 0.1 0.1 1"/>
+      <material name="black" rgba="0.1 0.1 0.1 1"/>
+      <material name="grey" rgba="0.6 0.6 0.6 1"/>
+
+<!-- Meshes -->
+      <mesh name="mainbody" file="stl/mainbody.stl" scale="0.001 0.001 0.001"/>
+      <mesh name="mainbody_cover" file="stl/mainbody_cover.stl" scale="0.001 0.001 0.001"/>
+      <mesh name="flshoulder" file="stl/fl_shoulder.stl" scale="0.001 0.001 0.001"/>
+      <mesh name="frshoulder" file="stl/fr_shoulder.stl" scale="0.001 0.001 0.001"/>
+      <mesh name="blshoulder" file="stl/bl_shoulder.stl" scale="0.001 0.001 0.001"/>
+      <mesh name="brshoulder" file="stl/br_shoulder.stl" scale="0.001 0.001 0.001"/>
+      <mesh name="flarm" file="stl/fl_upperarm.stl" scale="0.001 0.001 0.001"/>
+      <mesh name="blarm" file="stl/bl_upperarm.stl" scale="0.001 0.001 0.001"/>
+      <mesh name="frarm" file="stl/fr_upperarm.stl" scale="0.001 0.001 0.001"/>
+      <mesh name="brarm" file="stl/br_upperarm.stl" scale="0.001 0.001 0.001"/>
+      <mesh name="flfoot" file="stl/fl_lowerarm.stl" scale="0.001 0.001 0.001"/>
+      <mesh name="frfoot" file="stl/fr_lowerarm.stl" scale="0.001 0.001 0.001"/>
+      <mesh name="blfoot" file="stl/bl_lowerarm.stl" scale="0.001 0.001 0.001"/>
+      <mesh name="brfoot" file="stl/br_lowerarm.stl" scale="0.001 0.001 0.001"/>  
+<!-- Checkerboard texture for the plane -->
+      <texture 
+        builtin="checker" 
+        height="100" 
+        name="texplane" 
+        rgb1="0 0 0" 
+        rgb2="0.8 0.8 0.8" 
+        type="2d" 
+        width="100"
+      />
+<!-- Material for the plane -->
+      <material 
+        name="MatPlane" 
+        reflectance="0.5" 
+        shininess="1" 
+        specular="1" 
+        texrepeat="60 60" 
+        texture="texplane"
+      />
+  </asset>
+
+
+<default>
+    <default class="pluto">
+      <geom solref="0.004 1"/>
+      <joint actuatorfrcrange="-1000 1000"/>
+      <position kp="500" kv="40" inheritrange="1"/>
+      <default class="visual">
+        <geom group="2" type="mesh"/>
+      </default>
+      <default class="collision">
+        <geom group="3" type="mesh"/>
+        <default class="foot">
+          <geom type="sphere" size="0.036" pos="0 0 -0.3365" priority="1" condim="6" solimp="0.015 1 0.036"
+            friction="0.8 0.02 0.01"/>
+        </default>
+      </default>
+    </default>
+  </default>
+
+
+
+<worldbody>
+  <light name="spotlight" mode="targetbodycom" target="body" pos="3 0 4" cutoff="30"/>
+
+<!-- Main Body Configuration -->
+  <body name="body" childclass="pluto" pos="0 0 0.5">
+    <light name="tracking" mode="trackcom" pos="0 0 2"/>
+    <freejoint name="freejoint"/>
+    <inertial pos="0 0 -0.1" mass="2" diaginertia="0.13144 0.13144 0.13144"/>
+    <geom mesh="mainbody" material="black" class="visual"/>
+    <geom mesh="mainbody_cover" material="yellow" class="visual"/>
+
+
+
+<!-- Front Left Leg Setup -->
+  <body name="fl_hip" pos="0 0 0">
+      <inertial pos="-0.095233 -0.044034 -0.0018315" quat="1 1 -1 1" mass="1.68"
+        diaginertia="0.00226544 0.00211474 0.00181296"/>
+      <joint name="fl_hx" axis="1 0 0" pos="0.1159 -0.03806 0.008523" range="-70 70"/>
+      <geom material="black" mesh="flshoulder" class="visual"/>
+      <body name="fl_uleg" pos="0 0 0">
+        <inertial pos="-0.099109 -0.093035 -0.041872" mass="2.34" diaginertia="0.0275596 0.0273549 0.00284815"/>
+        <joint name="fl_hy" axis="0 1 0" pos="-0.09617 -0.07072 -0.001232"range="-70 70"/>
+        <geom mesh="flarm" material="black" class="visual"/>
+        <body name="fl_lleg" pos="0 0 0">
+          <inertial pos="-0.10974 -0.09585 -0.14581" quat="1 0 0 1" mass="0.35"
+            diaginertia="0.00405032 0.00399902 0.00014934"/>
+          <joint name="fl_kn" axis="0 1 0" pos="-0.1112 -0.1209 -0.1097" range="-70 70"/>
+          <geom material="black" mesh="flfoot" class="visual"/>
+        </body>
+      </body>
+    </body>
+
+
+
+<!-- Front Right Leg Setup -->
+  <body name="fr_hip" pos="0 0 0">
+    <inertial pos="-0.096388 0.044897 0" quat="1 1 -1 1" mass="1.68"
+      diaginertia="0.00226544 0.00211474 0.00181296"/>
+    <joint name="fr_hx" axis="1 0 0" pos="-0.1133 0.03917 0.01013" range="-70 70"/>
+    <geom material="black" mesh="frshoulder" class="visual"/>
+    <body name="fr_uleg" pos="0 0 0">
+      <inertial pos="-0.099036 0.093899 -0.04091" mass="2.34" diaginertia="0.0275596 0.0273549 0.00284815"/>
+      <joint name="fr_hy" axis="0 1 0" pos="-0.09646 0.07166 0" range="-70 70"/>
+      <geom mesh="frarm" material="black" class="visual"/>
+      <body name="fr_lleg" pos="0 0 0">
+        <inertial pos="-0.1093 0.096613 -0.14653" quat="1 0 0 1" mass="0.35"
+          diaginertia="0.00405032 0.00399902 0.00014934"/>
+        <joint name="fr_kn" axis="0 1 0" pos="-0.1106 0.1218 -0.109" range="-70 70"/>
+        <geom material="black" mesh="frfoot" class="visual"/>
+      </body>
+    </body>
+  </body>
+
+
+<!-- Hip Left Leg Setup -->
+  <body name="hl_hip" pos="0 0 0">
+          <inertial pos="0.090267 -0.044034 -0.0018315" quat="1 1 -1 1" mass="1.68"
+            diaginertia="0.00226544 0.00211474 0.00181296"/>
+          <joint name="hl_hx" axis="1 0 0" pos="0.1159 -0.03806 0.008523" range="-70 70"/>
+          <geom material="black" mesh="blshoulder" class="visual"/>
+          <body name="hl_uleg" pos="0 0 0">
+            <inertial pos="0.086392 -0.093033 -0.041866" mass="2.34" diaginertia="0.0275596 0.0273549 0.00284815"/>
+            <joint name="hl_hy" axis="0 1 0" pos="0.08908 -0.07078 -0.001355"range="-70 70"/>
+            <geom mesh="blarm" material="black" class="visual"/>
+            <body name="hl_lleg" pos="0 0 0">
+              <inertial pos="0.075755 -0.09585 -0.14581" quat="1 0 0 1" mass="0.35"
+                diaginertia="0.00405032 0.00399902 0.00014934"/>
+              <joint name="hl_kn" axis="0 1 0" pos="0.07443 -0.1209 -0.1096"range="-70 70"/>
+              <geom material="black" mesh="blfoot" class="visual"/>
+            </body>
+          </body>
+        </body>
+
+
+<!-- Hip Right Leg Setup -->
+  <body name="hr_hip" pos="0 0 0">
+    <inertial pos="-0.090112 0.044897 -0.00085521" quat="1 1 -1 1" mass="1.68"
+      diaginertia="0.00226544 0.00211474 0.00181296"/>
+    <joint name="hr_hx" axis="1 0 0" pos="-0.1133 0.03917 0.01013" range="-70 70"/>
+    <geom material="black" mesh="brshoulder" class="visual"/>
+    <body name="hr_uleg" pos="0 0 0">
+      <inertial pos="0.086464 0.093899 -0.04091" mass="2.34" diaginertia="0.0275596 0.0273549 0.00284815"/>
+      <joint name="hr_hy" axis="0 1 0" pos="0.08896 0.07172 0" range="-70 70"/>
+      <geom mesh="brarm" material="black" class="visual"/>
+      <body name="hr_lleg" pos="0 0 0">
+        <inertial pos="0.0762 0.096639 -0.14653" quat="1 0 0 1" mass="0.35"
+          diaginertia="0.00405032 0.00399902 0.00014934"/>
+        <joint name="hr_kn" axis="0 1 0" pos="0.07477 0.1218 -0.1089" range="-70 70"/>
+        <geom material="black" mesh="brfoot" class="visual"/>
+      </body>
+    </body>
+  </body>
+
+
+
+</body>
+</worldbody>
+
+  <actuator>
+    <position class="pluto" name="fl_hx" joint="fl_hx"/>
+    <position class="pluto" name="fl_hy" joint="fl_hy"/>
+    <position class="pluto" name="fl_kn" joint="fl_kn"/>
+    <position class="pluto" name="fr_hx" joint="fr_hx"/>
+    <position class="pluto" name="fr_hy" joint="fr_hy"/>
+    <position class="pluto" name="fr_kn" joint="fr_kn"/>
+    <position class="pluto" name="hl_hx" joint="hl_hx"/>
+    <position class="pluto" name="hl_hy" joint="hl_hy"/>
+    <position class="pluto" name="hl_kn" joint="hl_kn"/>
+    <position class="pluto" name="hr_hx" joint="hr_hx"/>
+    <position class="pluto" name="hr_hy" joint="hr_hy"/>
+    <position class="pluto" name="hr_kn" joint="hr_kn"/>
+  </actuator>
+
+
+  <keyframe>
+    <key name="home" qpos="
+    0 0 30
+    1 0 0 0
+    0 60 -100
+    0 60 -100
+    0 60 -100
+    0 60 -100"
+      ctrl="
+    0 60 -100
+    0 60 -100
+    0 60 -100
+    0 60 -100"/>
+  </keyframe>
+
+</mujoco>
